@@ -5,7 +5,7 @@ SPDX-FileCopyrightText: 2025 Suguru Hirahara
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
-# ntfy Ansible role
+# LiveKit Server Ansible role
 
 [![REUSE status](https://api.reuse.software/badge/github.com/mother-of-all-self-hosting/ansible-role-livekit-server)](https://api.reuse.software/info/github.com/mother-of-all-self-hosting/ansible-role-livekit-server)
 
