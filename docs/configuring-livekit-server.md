@@ -45,6 +45,20 @@ To serve LiveKit Server you need to set the hostname as well. To do so, add the 
 livekit_server_hostname: "example.com"
 ```
 
+### Configure TURN server (optional)
+
+You can enable a TURN server on the LiveKit's instance by adding the following configuration to your `vars.yml` file:
+
+```yaml
+livekit_server_config_turn_enabled: true
+```
+
+Its domain name, controlled by `turn.domain` property, is by default set to the same hostname as specified with the `livekit_server_hostname` variable. You can change it by adding and adjusting the following configuration to your `vars.yml` file:
+
+```yaml
+livekit_server_config_turn_domain: "example2.com"
+```
+
 ## Installing
 
 After configuring the playbook, run the installation command of your playbook as below:
