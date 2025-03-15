@@ -37,7 +37,7 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
 	--mount type=bind,src={{ livekit_server_config_path }}/config.yaml,dst=/livekit-config.yaml,ro \
 	--label-file={{ livekit_server_base_path }}/labels \
 	{{ livekit_server_container_image }} \
-	--dev --config /livekit-config.yaml
+	--config /livekit-config.yaml
 
 {% for network in livekit_server_container_additional_networks %}
 ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} network connect {{ network }} {{ livekit_server_identifier }}
