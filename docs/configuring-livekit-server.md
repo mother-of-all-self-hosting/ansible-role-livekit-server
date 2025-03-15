@@ -56,19 +56,17 @@ To serve LiveKit Server you need to set the hostname as well. To do so, add the 
 livekit_server_hostname: "example.com"
 ```
 
-### Configure TURN server (optional)
+### Set the key
 
-You can enable a TURN server on the LiveKit's instance by adding the following configuration to your `vars.yml` file:
+You also would probably wish to add at least one key to the `livekit_server_config_keys_custom` variable.
 
-```yaml
-livekit_server_config_turn_enabled: true
-```
-
-Its domain name, controlled by `turn.domain` property, is by default set to the same hostname as specified with the `livekit_server_hostname` variable. You can change it by adding and adjusting the following configuration to your `vars.yml` file:
+To add your own key, add the following configuration to your `vars.yml` file. Make sure to replace `example.com` with your own value.
 
 ```yaml
-livekit_server_config_turn_domain: "example2.com"
+livekit_server_config_keys_custom: YOUR_CUSTOM_KEY_HERE
 ```
+
+**Note**: on the MDAD playbook, the key value is specified with `livekit_server_config_keys_auto` by default, so you do not need to add them. See its [`matrix_servers`](https://github.com/spantaleev/matrix-docker-ansible-deploy/blob/master/group_vars/matrix_servers) for details.
 
 ## Installing
 
