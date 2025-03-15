@@ -11,6 +11,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 This is an [Ansible](https://www.ansible.com/) role which installs [LiveKit Server](https://docs.livekit.io/home/) to run as a [Docker](https://www.docker.com/) container wrapped in a systemd service.
 
+> LiveKit is an open source platform for developers building realtime media applications. It makes it easy to integrate audio, video, text, data, and AI models while offering scalable realtime infrastructure built on top of WebRTC.
+
+<small>Refer: https://docs.livekit.io/home/get-started/intro-to-livekit/</small>
+
 ## Adjusting the playbook configuration
 
 To enable LiveKit Server with this role, add the following configuration to your `vars.yml` file.
