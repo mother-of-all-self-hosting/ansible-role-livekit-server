@@ -72,3 +72,12 @@ If you use the MDAD Ansible playbook, the shortcut commands with the [`just` pro
 ## Troubleshooting
 
 You can find the logs in [systemd-journald](https://www.freedesktop.org/software/systemd/man/systemd-journald.service.html) by logging in to the server with SSH and running `journalctl -fu livekit-server` (or how you/your playbook named the service, e.g. `matrix-livekit-server`).
+
+### Increase logging verbosity
+
+The default logging level for this component is `info`. If you want to increase the verbosity, add the following configuration to your `vars.yml` file and re-run the playbook:
+
+```yaml
+# Valid values: debug, info, warn, error
+livekit_server_config_logging_level: "debug"
+```

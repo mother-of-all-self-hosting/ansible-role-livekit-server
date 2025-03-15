@@ -200,7 +200,7 @@ livekit_server_config_keys_auto: {}
 livekit_server_config_keys_custom: {}
 
 # Controls the `logging.level` configuration property.
-# Known values: debug, info, warn, error
+# Valid values: debug, info, warn, error
 livekit_server_config_logging_level: info
 
 # Controls the `logging.pion_level` configuration property
