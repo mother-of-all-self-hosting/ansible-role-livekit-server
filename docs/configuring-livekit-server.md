@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2018 - 2024 Slavi Pantaleev
+SPDX-FileCopyrightText: 2018 - 2025 Slavi Pantaleev
 SPDX-FileCopyrightText: 2019 Eduardo Beltrame
 SPDX-FileCopyrightText: 2020 - 2025 MDAD project contributors
 SPDX-FileCopyrightText: 2024 - 2025 Suguru Hirahara
@@ -14,6 +14,17 @@ This is an [Ansible](https://www.ansible.com/) role which installs [LiveKit Serv
 > LiveKit is an open source platform for developers building realtime media applications. It makes it easy to integrate audio, video, text, data, and AI models while offering scalable realtime infrastructure built on top of WebRTC.
 
 <small>Refer: https://docs.livekit.io/home/get-started/intro-to-livekit/</small>
+
+## Prerequisites
+
+### Adjusting firewall rules
+
+To ensure LiveKit Server functions correctly, the following firewall rules and port forwarding settings are required:
+
+- `7881/tcp`: ICE/TCP
+- `7882/udp`: ICE/UDP Mux
+
+💡 The suggestions above are inspired by the upstream [Ports and Firewall](https://docs.livekit.io/home/self-hosting/ports-firewall/) documentation based on how LiveKit is configured in the playbook. If you've using custom configuration for the LiveKit Server role, you may need to adjust the firewall rules accordingly.
 
 ## Adjusting the playbook configuration
 
