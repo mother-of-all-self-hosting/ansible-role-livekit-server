@@ -60,10 +60,12 @@ livekit_server_hostname: "example.com"
 
 You also would probably wish to add at least one key to the `livekit_server_config_keys_custom` variable.
 
-To add your own key, add the following configuration to your `vars.yml` file. Make sure to replace `example.com` with your own value.
+To add your own key, add the following configuration to your `vars.yml` file (adapt to your needs). 
 
 ```yaml
-livekit_server_config_keys_custom: YOUR_CUSTOM_KEY_HERE
+livekit_server_config_keys_custom:
+  key1: secret1
+  key2: secret2
 ```
 
 **Note**: on the MDAD playbook, the key value is specified with `livekit_server_config_keys_auto` by default, so you do not need to add them. See its [`matrix_servers`](https://github.com/spantaleev/matrix-docker-ansible-deploy/blob/master/group_vars/matrix_servers) for details.
