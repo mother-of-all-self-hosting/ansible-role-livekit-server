@@ -60,7 +60,7 @@ livekit_server_hostname: "example.com"
 
 You also would probably wish to add at least one key to the `livekit_server_config_keys_custom` variable.
 
-To add your own key, add the following configuration to your `vars.yml` file (adapt to your needs). 
+To add your own key, add the following configuration to your `vars.yml` file (adapt to your needs).
 
 ```yaml
 livekit_server_config_keys_custom:
