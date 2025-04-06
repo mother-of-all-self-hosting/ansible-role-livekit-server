@@ -12,6 +12,13 @@ Environment="HOME={{ devture_systemd_docker_base_systemd_unit_home_path }}"
 ExecStartPre=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} stop --time={{ devture_systemd_docker_base_container_stop_grace_time_seconds }} {{ livekit_server_identifier }} 2>/dev/null || true'
 ExecStartPre=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} rm {{ livekit_server_identifier }} 2>/dev/null || true'
 
+{% if livekit_server_host_sysctl_minimum_net_core_rmem_max %}
+ExecStartPre={{ devture_systemd_docker_base_host_command_sh }} -c 'current_rmem=$(sysctl -n net.core.rmem_max); if [ "$current_rmem" -lt {{ livekit_server_host_sysctl_minimum_net_core_rmem_max }} ]; then sysctl -w net.core.rmem_max={{ livekit_server_host_sysctl_minimum_net_core_rmem_max }}; fi'
+{% endif %}
+{% if livekit_server_host_sysctl_minimum_net_core_wmem_max %}
+ExecStartPre={{ devture_systemd_docker_base_host_command_sh }} -c 'current_wmem=$(sysctl -n net.core.wmem_max); if [ "$current_wmem" -lt {{ livekit_server_host_sysctl_minimum_net_core_wmem_max }} ]; then sysctl -w net.core.wmem_max={{ livekit_server_host_sysctl_minimum_net_core_wmem_max }}; fi'
+{% endif %}
+
 ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
 	--rm \
 	--name={{ livekit_server_identifier }} \
