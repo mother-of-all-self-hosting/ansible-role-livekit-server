@@ -2,8 +2,7 @@
 
 port: {{ livekit_server_config_port | int | to_json }}
 
-bind_addresses:
-  - "0.0.0.0"
+bind_addresses: {{ livekit_server_config_bind_addresses | to_json }}
 
 rtc:
   tcp_port: {{ livekit_server_config_rtc_tcp_port | int | to_json }}

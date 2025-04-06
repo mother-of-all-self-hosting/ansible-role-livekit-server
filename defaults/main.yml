@@ -146,6 +146,9 @@ livekit_server_configuration_extension: "{{ livekit_server_configuration_extensi
 # See: https://docs.livekit.io/home/self-hosting/ports-firewall/
 livekit_server_config_port: 7880
 
+# Controls the `bind_addresses` configuration property.
+livekit_server_config_bind_addresses: ["::"]
+
 ########################################################################################
 #                                                                                      #
 # RTC                                                                                  #
