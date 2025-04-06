@@ -74,6 +74,13 @@ livekit_server_container_labels_traefik_tls_certResolver: default  # noqa var-na
 #   another.label="here"
 livekit_server_container_labels_additional_labels: ''
 
+# A list of additional "volumes" to mount in the container.
+# Contains definition objects like this: `{"type": "bind", "src": "/outside", "dst": "/inside", "options": "readonly"}.
+# See the `--mount` documentation for the `docker run` command.
+livekit_server_container_additional_volumes: "{{ livekit_server_container_additional_volumes_auto + livekit_server_container_additional_volumes_custom }}"
+livekit_server_container_additional_volumes_auto: []
+livekit_server_container_additional_volumes_custom: []
+
 # A list of extra arguments to pass to the container
 livekit_server_container_extra_arguments: []
 
@@ -170,11 +177,13 @@ livekit_server_config_turn_enabled: false
 livekit_server_config_turn_domain: "{{ livekit_server_hostname }}"
 
 # Controls the `turn.cert_file` configuration property.
-# Path to the TLS certificate file.
+# Path to the TLS certificate file in the container.
+# Files on the host can be mounted into the container using `livekit_server_container_additional_volumes`.
 livekit_server_config_turn_cert_file: ''
 
 # Controls the `turn.key_file` configuration property.
-# Path to the TLS key file.
+# Path to the TLS key file in the container.
+# Files on the host can be mounted into the container using `livekit_server_container_additional_volumes`.
 livekit_server_config_turn_key_file: ''
 
 # Controls the `turn.external_tls` configuration property.
