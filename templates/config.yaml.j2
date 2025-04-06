@@ -32,6 +32,13 @@ turn:
   external_tls: {{ livekit_server_config_turn_external_tls | to_json }}
 {% endif %}
 
+{% if livekit_server_config_prometheus_enabled %}
+prometheus:
+  port: {{ livekit_server_config_prometheus_port | int | to_json }}
+  username: {{ livekit_server_config_prometheus_username | to_json }}
+  password: {{ livekit_server_config_prometheus_password | to_json }}
+{% endif %}
+
 keys: {{ livekit_server_config_keys | to_json }}
 
 logging:

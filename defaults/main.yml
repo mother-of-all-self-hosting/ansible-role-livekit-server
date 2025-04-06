@@ -43,6 +43,13 @@ livekit_server_container_rtc_listen_interface: "{{ '' if livekit_server_containe
 # Takes a null/none value (`~`) or 'none' (as a string) to prevent listening.
 livekit_server_container_turn_listen_interface: "{{ '' if livekit_server_container_network != 'host' else 'none' }}"
 
+# Controls whether the LiveKit Server container exposes its metrics and which interface to do it on.
+#
+# Takes an interface "<ip address>" (e.g. "127.0.0.1"), or empty string to listen on all interfaces.
+# Takes a null/none value (`~`) or 'none' (as a string) to prevent listening.
+# See `livekit_server_config_prometheus_port`.
+livekit_server_container_metrics_listen_interface: ~
+
 livekit_server_container_image_self_build: false
 livekit_server_container_repo: "https://github.com/livekit/livekit.git"
 livekit_server_container_repo_version: "{{ 'main' if livekit_server_version == 'latest' else livekit_server_version }}"
@@ -64,6 +71,18 @@ livekit_server_container_labels_traefik_priority: 0
 livekit_server_container_labels_traefik_entrypoints: web-secure
 livekit_server_container_labels_traefik_tls: "{{ livekit_server_container_labels_traefik_entrypoints != 'web' }}"
 livekit_server_container_labels_traefik_tls_certResolver: default  # noqa var-naming
+
+# Controls whether labels will be added that expose metrics (see `livekit_server_metrics_proxying_enabled`)
+livekit_server_container_labels_public_metrics_enabled: "{{ livekit_server_config_prometheus_enabled and livekit_server_metrics_proxying_enabled }}"
+livekit_server_container_labels_public_metrics_traefik_path: "{{ livekit_server_metrics_proxying_path }}"
+livekit_server_container_labels_public_metrics_traefik_rule: "Host(`{{ livekit_server_metrics_proxying_hostname }}`) && Path(`{{ livekit_server_container_labels_public_metrics_traefik_path }}`)"
+livekit_server_container_labels_public_metrics_traefik_priority: 0
+livekit_server_container_labels_public_metrics_traefik_entrypoints: "{{ livekit_server_container_labels_traefik_entrypoints }}"
+livekit_server_container_labels_public_metrics_traefik_tls: "{{ livekit_server_container_labels_traefik_tls }}"
+livekit_server_container_labels_public_metrics_traefik_tls_certResolver: "{{ livekit_server_container_labels_traefik_tls_certResolver }}"  # noqa var-naming
+livekit_server_container_labels_public_metrics_middleware_basic_auth_enabled: false
+# See: https://doc.traefik.io/traefik/middlewares/http/basicauth/#users
+livekit_server_container_labels_public_metrics_middleware_basic_auth_users: ''
 
 # livekit_server_container_labels_additional_labels contains a multiline string with additional labels to add to the container label file.
 # See `../templates/labels.j2` for details.
@@ -231,6 +250,32 @@ livekit_server_config_turn_udp_port: 3478
 #                                                                                      #
 ########################################################################################
 
+########################################################################################
+#                                                                                      #
+# Prometheus                                                                            #
+#                                                                                      #
+########################################################################################
+
+# When set to true, enables Prometheus metrics.
+livekit_server_config_prometheus_enabled: false
+
+# Controls the `prometheus.port` configuration property, which affects the metrics port (in the container) that LiveKit Server exposes.
+livekit_server_config_prometheus_port: 8081
+
+# Controls the `prometheus.username` configuration property.
+# As an alternative, can configure authentication via `livekit_server_container_labels_public_metrics_middleware_basic_auth_users` as well.
+livekit_server_config_prometheus_username: ''
+
+# Controls the `prometheus.password` configuration property.
+# As an alternative, can configure authentication via `livekit_server_container_labels_public_metrics_middleware_basic_auth_users` as well.
+livekit_server_config_prometheus_password: ''
+
+########################################################################################
+#                                                                                      #
+# /Prometheus                                                                           #
+#                                                                                      #
+########################################################################################
+
 # Controls the `keys` configuration property.
 livekit_server_config_keys: "{{ livekit_server_config_keys_auto | combine(livekit_server_config_keys_custom, recursive=True) }}"
 livekit_server_config_keys_auto: {}
@@ -251,3 +296,8 @@ livekit_server_config_logging_json: false
 # For production setups, enables sampling algorithm.
 # See: https://github.com/uber-go/zap/blob/master/FAQ.md#why-sample-application-logs
 livekit_server_config_logging_sample: false
+
+# Controls whether LiveKitServer's metrics should be proxied (exposed) publicly via Traefik.
+livekit_server_metrics_proxying_enabled: false
+livekit_server_metrics_proxying_hostname: ''
+livekit_server_metrics_proxying_path: /metrics/livekit-server
