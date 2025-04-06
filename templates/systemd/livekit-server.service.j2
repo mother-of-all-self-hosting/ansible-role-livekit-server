@@ -39,7 +39,7 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
 	-p {{ livekit_server_container_turn_listen_interface }}{{ ':' if livekit_server_container_turn_listen_interface else '' }}{{ livekit_server_config_turn_tls_port }}:{{ livekit_server_config_turn_tls_port }} \
 	{% endif %}
 	{% if livekit_server_container_turn_listen_interface is not in [none, 'none'] and livekit_server_config_turn_enabled %}
-	-p {{ livekit_server_container_turn_listen_interface }}{{ ':' if livekit_server_container_turn_listen_interface else '' }}{{ livekit_server_config_turn_udp_port }}:{{ livekit_server_config_turn_udp_port }} \
+	-p {{ livekit_server_container_turn_listen_interface }}{{ ':' if livekit_server_container_turn_listen_interface else '' }}{{ livekit_server_config_turn_udp_port }}:{{ livekit_server_config_turn_udp_port }}/udp \
 	{% endif %}
 	--mount type=bind,src={{ livekit_server_config_path }}/config.yaml,dst=/livekit-config.yaml,ro \
 	{% for volume in livekit_server_container_additional_volumes %}
