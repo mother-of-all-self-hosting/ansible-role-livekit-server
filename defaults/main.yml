@@ -5,25 +5,36 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-
 # Project source code URL: https://github.com/livekit/livekit
 
 livekit_server_enabled: false
 
 livekit_server_identifier: livekit-server
-
-livekit_server_uid: ''
-livekit_server_gid: ''
-
 livekit_server_base_path: "/{{ livekit_server_identifier }}"
 livekit_server_config_path: "{{ livekit_server_base_path }}/config"
 
 # renovate: datasource=docker depName=docker.io/livekit/livekit-server
 livekit_server_version: v1.9.0
 
+livekit_server_uid: ''
+livekit_server_gid: ''
+
 livekit_server_scheme: https
+
 livekit_server_hostname: ""
+
 livekit_server_path_prefix: /
+
+livekit_server_container_image: "{{ livekit_server_container_image_registry_prefix }}livekit/livekit-server:{{ livekit_server_version }}"
+livekit_server_container_image_registry_prefix: "{{ 'localhost/' if livekit_server_container_image_self_build else livekit_server_container_image_registry_prefix_upstream }}"
+livekit_server_container_image_registry_prefix_upstream: "{{ livekit_server_container_image_registry_prefix_upstream_default }}"
+livekit_server_container_image_registry_prefix_upstream_default: docker.io/
+livekit_server_container_image_force_pull: "{{ livekit_server_container_image.endswith(':latest') }}"
+
+livekit_server_container_image_self_build: false
+livekit_server_container_repo: "https://github.com/livekit/livekit.git"
+livekit_server_container_repo_version: "{{ 'main' if livekit_server_version == 'latest' else livekit_server_version }}"
+livekit_server_container_src_files_path: "{{ livekit_server_base_path }}/container-src"
 
 livekit_server_container_network: "{{ livekit_server_identifier }}"
 
@@ -31,35 +42,12 @@ livekit_server_container_additional_networks: "{{ livekit_server_container_addit
 livekit_server_container_additional_networks_auto: []
 livekit_server_container_additional_networks_custom: []
 
-# Controls whether the LiveKit Server container exposes its RTC ports and which interface to do it on.
-#
-# Takes an interface "<ip address>" (e.g. "127.0.0.1"), or empty string to listen on all interfaces.
-# Takes a null/none value (`~`) or 'none' (as a string) to prevent listening.
-livekit_server_container_rtc_listen_interface: "{{ '' if livekit_server_container_network != 'host' else 'none' }}"
-
-# Controls whether the LiveKit Server container exposes its TURN ports and which interface to do it on.
-#
-# Takes an interface "<ip address>" (e.g. "127.0.0.1"), or empty string to listen on all interfaces.
-# Takes a null/none value (`~`) or 'none' (as a string) to prevent listening.
-livekit_server_container_turn_listen_interface: "{{ '' if livekit_server_container_network != 'host' else 'none' }}"
-
-# Controls whether the LiveKit Server container exposes its metrics and which interface to do it on.
-#
-# Takes an interface "<ip address>" (e.g. "127.0.0.1"), or empty string to listen on all interfaces.
-# Takes a null/none value (`~`) or 'none' (as a string) to prevent listening.
-# See `livekit_server_config_prometheus_port`.
-livekit_server_container_metrics_listen_interface: ~
-
-livekit_server_container_image_self_build: false
-livekit_server_container_repo: "https://github.com/livekit/livekit.git"
-livekit_server_container_repo_version: "{{ 'main' if livekit_server_version == 'latest' else livekit_server_version }}"
-livekit_server_container_src_files_path: "{{ livekit_server_base_path }}/container-src"
-
-livekit_server_container_image: "{{ livekit_server_container_image_registry_prefix }}livekit/livekit-server:{{ livekit_server_version }}"
-livekit_server_container_image_registry_prefix: "{{ 'localhost/' if livekit_server_container_image_self_build else livekit_server_container_image_registry_prefix_upstream }}"
-livekit_server_container_image_registry_prefix_upstream: "{{ livekit_server_container_image_registry_prefix_upstream_default }}"
-livekit_server_container_image_registry_prefix_upstream_default: docker.io/
-livekit_server_container_image_force_pull: "{{ livekit_server_container_image.endswith(':latest') }}"
+# A list of additional "volumes" to mount in the container.
+# Contains definition objects like this: `{"type": "bind", "src": "/outside", "dst": "/inside", "options": "readonly"}.
+# See the `--mount` documentation for the `docker run` command.
+livekit_server_container_additional_volumes: "{{ livekit_server_container_additional_volumes_auto + livekit_server_container_additional_volumes_custom }}"
+livekit_server_container_additional_volumes_auto: []
+livekit_server_container_additional_volumes_custom: []
 
 livekit_server_container_labels_traefik_enabled: true
 livekit_server_container_labels_traefik_docker_network: "{{ livekit_server_container_network }}"
@@ -92,13 +80,6 @@ livekit_server_container_labels_public_metrics_middleware_basic_auth_users: ''
 #   my.label=1
 #   another.label="here"
 livekit_server_container_labels_additional_labels: ''
-
-# A list of additional "volumes" to mount in the container.
-# Contains definition objects like this: `{"type": "bind", "src": "/outside", "dst": "/inside", "options": "readonly"}.
-# See the `--mount` documentation for the `docker run` command.
-livekit_server_container_additional_volumes: "{{ livekit_server_container_additional_volumes_auto + livekit_server_container_additional_volumes_custom }}"
-livekit_server_container_additional_volumes_auto: []
-livekit_server_container_additional_volumes_custom: []
 
 # A list of extra arguments to pass to the container
 livekit_server_container_extra_arguments: []
@@ -160,6 +141,25 @@ livekit_server_configuration_extension_yaml: |
   #   level: debug
 
 livekit_server_configuration_extension: "{{ livekit_server_configuration_extension_yaml | from_yaml if livekit_server_configuration_extension_yaml | from_yaml is mapping else {} }}"
+
+# Controls whether the LiveKit Server container exposes its RTC ports and which interface to do it on.
+#
+# Takes an interface "<ip address>" (e.g. "127.0.0.1"), or empty string to listen on all interfaces.
+# Takes a null/none value (`~`) or 'none' (as a string) to prevent listening.
+livekit_server_container_rtc_listen_interface: "{{ '' if livekit_server_container_network != 'host' else 'none' }}"
+
+# Controls whether the LiveKit Server container exposes its TURN ports and which interface to do it on.
+#
+# Takes an interface "<ip address>" (e.g. "127.0.0.1"), or empty string to listen on all interfaces.
+# Takes a null/none value (`~`) or 'none' (as a string) to prevent listening.
+livekit_server_container_turn_listen_interface: "{{ '' if livekit_server_container_network != 'host' else 'none' }}"
+
+# Controls whether the LiveKit Server container exposes its metrics and which interface to do it on.
+#
+# Takes an interface "<ip address>" (e.g. "127.0.0.1"), or empty string to listen on all interfaces.
+# Takes a null/none value (`~`) or 'none' (as a string) to prevent listening.
+# See `livekit_server_config_prometheus_port`.
+livekit_server_container_metrics_listen_interface: ~
 
 # Controls the `port` configuration property.
 # See: https://docs.livekit.io/home/self-hosting/ports-firewall/
