@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: 2022 MDAD project contributors
 # SPDX-FileCopyrightText: 2024 wjbeckett
 # SPDX-FileCopyrightText: 2024 - 2025 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2025 Suguru Hirahara
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -74,7 +75,7 @@
 
     - name: Ensure LiveKit Server container image is built
       community.docker.docker_image:
-        name: "{{ livekit_server_container_image }}"
+        name: "{{ livekit_server_container_image_name }}"
         source: build
         force_source: "{{ livekit_server_git_pull_results.changed if ansible_version.major > 2 or ansible_version.minor >= 8 else omit }}"
         force: "{{ omit if ansible_version.major > 2 or ansible_version.minor >= 8 else livekit_server_git_pull_results.changed }}"
@@ -82,6 +83,7 @@
           dockerfile: Dockerfile
           path: "{{ livekit_server_container_src_files_path }}"
           pull: true
+          args:
 
 - name: Ensure LiveKit Server container network is created via community.docker.docker_network
   when: devture_systemd_docker_base_container_network_creation_method == 'ansible-module'
