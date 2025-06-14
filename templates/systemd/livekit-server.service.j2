@@ -49,7 +49,7 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
 	--mount type={{ volume.type | default('bind' if '/' in volume.src else 'volume') }},src={{ volume.src }},dst={{ volume.dst }}{{ (',' + volume.options) if volume.options else '' }} \
 	{% endfor %}
 	--label-file={{ livekit_server_base_path }}/labels \
-	{{ livekit_server_container_image }} \
+	{{ livekit_server_container_image_self_build_name if livekit_server_container_image_self_build else livekit_server_container_image }} \
 	--config /livekit-config.yaml
 
 {% for network in livekit_server_container_additional_networks %}
