@@ -35,10 +35,10 @@ livekit_server_container_image_registry_prefix_upstream_default: docker.io/
 livekit_server_container_image_force_pull: "{{ livekit_server_container_image.endswith(':latest') }}"
 
 livekit_server_container_image_self_build: false
-livekit_server_container_image_name: "livekit/livekit:{{ livekit_server_container_repo_version }}"
-livekit_server_container_repo: "https://github.com/livekit/livekit.git"
-livekit_server_container_repo_version: "{{ livekit_server_version if livekit_server_version != 'latest' else 'main' }}"
-livekit_server_container_src_files_path: "{{ livekit_server_base_path }}/docker-src"
+livekit_server_container_image_self_build_name: "livekit/livekit:{{ livekit_server_container_image_self_build_repo_version }}"
+livekit_server_container_image_self_build_repo: "https://github.com/livekit/livekit.git"
+livekit_server_container_image_self_build_repo_version: "{{ livekit_server_version if livekit_server_version != 'latest' else 'main' }}"
+livekit_server_container_image_self_build_src_files_path: "{{ livekit_server_base_path }}/docker-src"
 
 # The base container network. It will be auto-created by this role if it doesn't exist already.
 livekit_server_container_network: "{{ livekit_server_identifier }}"

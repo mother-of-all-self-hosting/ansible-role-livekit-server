@@ -16,7 +16,7 @@
   with_items:
     - { path: "{{ livekit_server_base_path }}", when: true }
     - { path: "{{ livekit_server_config_path }}", when: true }
-    - { path: "{{ livekit_server_container_src_files_path }}", when: "{{ livekit_server_container_image_self_build }}" }
+    - { path: "{{ livekit_server_container_image_self_build_src_files_path }}", when: "{{ livekit_server_container_image_self_build }}" }
   when: "item.when | bool"
 
 - name: Ensure LiveKit Server configuration installed
@@ -65,9 +65,9 @@
   block:
     - name: Ensure LiveKit Server repository is present on self-build
       ansible.builtin.git:
-        repo: "{{ livekit_server_container_repo }}"
-        version: "{{ livekit_server_container_repo_version }}"
-        dest: "{{ livekit_server_container_src_files_path }}"
+        repo: "{{ livekit_server_container_image_self_build_repo }}"
+        version: "{{ livekit_server_container_image_self_build_repo_version }}"
+        dest: "{{ livekit_server_container_image_self_build_src_files_path }}"
         force: "yes"
       become: true
       become_user: "{{ livekit_server_uid }}"
@@ -75,13 +75,13 @@
 
     - name: Ensure LiveKit Server container image is built
       community.docker.docker_image:
-        name: "{{ livekit_server_container_image_name }}"
+        name: "{{ livekit_server_container_image_self_build_name }}"
         source: build
         force_source: "{{ livekit_server_git_pull_results.changed if ansible_version.major > 2 or ansible_version.minor >= 8 else omit }}"
         force: "{{ omit if ansible_version.major > 2 or ansible_version.minor >= 8 else livekit_server_git_pull_results.changed }}"
         build:
           dockerfile: Dockerfile
-          path: "{{ livekit_server_container_src_files_path }}"
+          path: "{{ livekit_server_container_image_self_build_src_files_path }}"
           pull: true
           args:
 
