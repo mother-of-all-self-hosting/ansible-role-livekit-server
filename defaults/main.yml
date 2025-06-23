@@ -217,6 +217,10 @@ livekit_server_config_rtc_udp_port: 7882
 # This is useful for cloud environments such as AWS & Google where hosts have an internal IP that maps to an external one.
 livekit_server_config_rtc_use_external_ip: true
 
+# Controls the `rtc.node_ip` configuration proberty
+# This is the rtc IP address sent to the client.
+livekit_server_config_rtc_node_ip: ''
+
 ########################################################################################
 #                                                                                      #
 # /RTC                                                                                 #
