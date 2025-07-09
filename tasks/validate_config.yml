@@ -18,7 +18,7 @@
 
 - name: Fail if required LiveKit Server settings are not defined
   ansible.builtin.fail:
-    msg: >
+    msg: >-
       You need to define a required configuration setting (`{{ item.name }}`).
   when: "item.when | bool and vars[item.name] | length == 0"
   with_items:
@@ -32,7 +32,7 @@
 
 - name: Fail if LiveKit Server port range configuration is invalid
   ansible.builtin.fail:
-    msg: >
+    msg: >-
       You need to either define both port range settings (livekit_server_config_rtc_port_range_start and livekit_server_config_rtc_port_range_end)
       or define a single UDP port (livekit_server_config_rtc_udp_port).
   when: >
