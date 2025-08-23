@@ -129,6 +129,12 @@ livekit_server_systemd_required_services_list_default: "{{ [devture_systemd_dock
 livekit_server_systemd_required_services_list_auto: []
 livekit_server_systemd_required_services_list_custom: []
 
+# List of systemd services that the LiveKit Server systemd service wants
+livekit_server_systemd_wanted_services_list: "{{ livekit_server_systemd_wanted_services_list_default + livekit_server_systemd_wanted_services_list_auto + livekit_server_systemd_wanted_services_list_custom }}"
+livekit_server_systemd_wanted_services_list_default: []
+livekit_server_systemd_wanted_services_list_auto: []
+livekit_server_systemd_wanted_services_list_custom: []
+
 # Holds the final LiveKit Server configuration (a combination of the default and its extension).
 # You most likely don't need to touch this variable. Instead, see `livekit_server_configuration_yaml` or `livekit_server_configuration_extension_yaml`.
 livekit_server_configuration: "{{ livekit_server_configuration_yaml | from_yaml | combine(livekit_server_configuration_extension, recursive=True) }}"
