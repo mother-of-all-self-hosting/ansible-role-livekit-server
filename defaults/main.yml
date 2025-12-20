@@ -96,7 +96,9 @@ livekit_server_container_labels_public_metrics_middleware_basic_auth_users: ''
 livekit_server_container_labels_additional_labels: ''
 
 # A list of extra arguments to pass to the container
-livekit_server_container_extra_arguments: []
+livekit_server_container_extra_arguments: "{{ livekit_server_container_extra_arguments_auto + livekit_server_container_extra_arguments_custom }}"
+livekit_server_container_extra_arguments_auto: []
+livekit_server_container_extra_arguments_custom: []
 
 # Specifies the maximum size of the socket receive buffer (`net.core.rmem_max`) kernel parameter on the host (which will cascade into the container) to at least this value.
 # If the host uses a larger value, this will be ignored.
