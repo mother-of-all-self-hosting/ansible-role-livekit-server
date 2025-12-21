@@ -98,7 +98,7 @@ livekit_server_container_labels_additional_labels: "{{ livekit_server_container_
 livekit_server_container_labels_additional_labels_auto: {}
 livekit_server_container_labels_additional_labels_custom: {}
 
-# A list of extra arguments to pass to the container
+# A list of extra arguments to pass to the container (`docker create` command)
 livekit_server_container_extra_arguments: "{{ livekit_server_container_extra_arguments_auto + livekit_server_container_extra_arguments_custom }}"
 livekit_server_container_extra_arguments_auto: []
 livekit_server_container_extra_arguments_custom: []
