@@ -25,7 +25,7 @@ livekit_server_scheme: https
 # The hostname at which LiveKit Server is served.
 livekit_server_hostname: ""
 
-# The path at which LiveKit Server is exposed.
+# The path at which LiveKit Server is served.
 livekit_server_path_prefix: /
 
 livekit_server_container_image: "{{ livekit_server_container_image_registry_prefix }}livekit/livekit-server:{{ livekit_server_version }}"
