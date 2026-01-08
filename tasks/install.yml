@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2022 MDAD project contributors
 # SPDX-FileCopyrightText: 2024 wjbeckett
-# SPDX-FileCopyrightText: 2024 - 2025 Slavi Pantaleev
-# SPDX-FileCopyrightText: 2025 Suguru Hirahara
+# SPDX-FileCopyrightText: 2024, 2025 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2025, 2026 Suguru Hirahara
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -27,13 +27,16 @@
     owner: "{{ livekit_server_uid }}"
     group: "{{ livekit_server_gid }}"
 
-- name: Ensure LiveKit Server labels file installed
+- name: Ensure LiveKit Server support files installed
   ansible.builtin.template:
-    src: "{{ role_path }}/templates/labels.j2"
-    dest: "{{ livekit_server_base_path }}/labels"
+    src: "{{ role_path }}/templates/{{ item }}.j2"
+    dest: "{{ livekit_server_base_path }}/{{ item }}"
     mode: "0640"
     owner: "{{ livekit_server_uid }}"
     group: "{{ livekit_server_gid }}"
+  with_items:
+    - env
+    - labels
 
 - name: Run if self-building of LiveKit Server container image is not enabled
   when: "not livekit_server_container_image_self_build | bool"

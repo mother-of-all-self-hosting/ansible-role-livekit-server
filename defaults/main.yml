@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2022 MDAD project contributors
 # SPDX-FileCopyrightText: 2024 wjbeckett
-# SPDX-FileCopyrightText: 2024 - 2025 Slavi Pantaleev
-# SPDX-FileCopyrightText: 2025 Suguru Hirahara
+# SPDX-FileCopyrightText: 2024, 2025 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2025, 2026 Suguru Hirahara
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -192,6 +192,12 @@ livekit_server_config_port: 7880
 
 # Controls the `bind_addresses` configuration property.
 livekit_server_config_bind_addresses: ["::"]
+
+# Specify the timezone
+livekit_server_environment_variables_tz: UTC
+
+# Additional environment variables.
+livekit_server_environment_variables_additional_variables: ""
 
 ########################################################################################
 #                                                                                      #
