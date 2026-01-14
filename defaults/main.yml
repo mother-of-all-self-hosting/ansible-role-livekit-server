@@ -20,6 +20,7 @@ livekit_server_version: v1.9.10
 livekit_server_uid: ""
 livekit_server_gid: ""
 
+# The scheme used for serving LiveKit Server.
 livekit_server_scheme: https
 
 # The hostname at which LiveKit Server is served.
