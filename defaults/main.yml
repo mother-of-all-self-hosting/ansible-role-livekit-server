@@ -44,6 +44,25 @@ livekit_server_container_image_self_build_src_files_path: "{{ livekit_server_bas
 # The base container network. It will be auto-created by this role if it doesn't exist already.
 livekit_server_container_network: "{{ livekit_server_identifier }}"
 
+# Specify how the container publishes its RTC port and which interface to do it on.
+#
+# Takes an interface "<ip address>" (e.g. "127.0.0.1"), or empty string to listen on all interfaces.
+# Takes a null/none value (`~`) or 'none' (as a string) to prevent listening.
+livekit_server_container_rtc_listen_interface: "{{ '' if livekit_server_container_network != 'host' else 'none' }}"
+
+# Specify how the container publishes its TURN port and which interface to do it on.
+#
+# Takes an interface "<ip address>" (e.g. "127.0.0.1"), or empty string to listen on all interfaces.
+# Takes a null/none value (`~`) or 'none' (as a string) to prevent listening.
+livekit_server_container_turn_listen_interface: "{{ '' if livekit_server_container_network != 'host' else 'none' }}"
+
+# Specify how the container publishes its metrics and which interface to do it on.
+#
+# Takes an interface "<ip address>" (e.g. "127.0.0.1"), or empty string to listen on all interfaces.
+# Takes a null/none value (`~`) or 'none' (as a string) to prevent listening.
+# See `livekit_server_config_prometheus_port`.
+livekit_server_container_metrics_listen_interface: ~
+
 # A list of additional container networks that the container would be connected to.
 # The role does not create these networks, so make sure they already exist.
 # Use this to expose this container to another reverse proxy, which runs in a different container network.
@@ -167,25 +186,6 @@ livekit_server_configuration_extension_yaml: |
   #   level: debug
 
 livekit_server_configuration_extension: "{{ livekit_server_configuration_extension_yaml | from_yaml if livekit_server_configuration_extension_yaml | from_yaml is mapping else {} }}"
-
-# Controls whether the LiveKit Server container exposes its RTC ports and which interface to do it on.
-#
-# Takes an interface "<ip address>" (e.g. "127.0.0.1"), or empty string to listen on all interfaces.
-# Takes a null/none value (`~`) or 'none' (as a string) to prevent listening.
-livekit_server_container_rtc_listen_interface: "{{ '' if livekit_server_container_network != 'host' else 'none' }}"
-
-# Controls whether the LiveKit Server container exposes its TURN ports and which interface to do it on.
-#
-# Takes an interface "<ip address>" (e.g. "127.0.0.1"), or empty string to listen on all interfaces.
-# Takes a null/none value (`~`) or 'none' (as a string) to prevent listening.
-livekit_server_container_turn_listen_interface: "{{ '' if livekit_server_container_network != 'host' else 'none' }}"
-
-# Controls whether the LiveKit Server container exposes its metrics and which interface to do it on.
-#
-# Takes an interface "<ip address>" (e.g. "127.0.0.1"), or empty string to listen on all interfaces.
-# Takes a null/none value (`~`) or 'none' (as a string) to prevent listening.
-# See `livekit_server_config_prometheus_port`.
-livekit_server_container_metrics_listen_interface: ~
 
 # Controls the `port` configuration property.
 # See: https://docs.livekit.io/home/self-hosting/ports-firewall/
