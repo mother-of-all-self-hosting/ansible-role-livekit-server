@@ -89,6 +89,7 @@
           path: "{{ livekit_server_container_image_self_build_src_files_path }}"
           pull: true
           args:
+      register: livekit_server_container_image_build_result
 
 - name: Ensure LiveKit Server container network is created via community.docker.docker_network
   when: devture_systemd_docker_base_container_network_creation_method == 'ansible-module'
@@ -125,4 +126,5 @@
         or livekit_server_config_result.changed | default(false)
         or livekit_server_systemd_service_result.changed | default(false)
         or livekit_server_container_image_pull_result.changed | default(false)
+        or livekit_server_container_image_build_result.changed | default(false)
       }}
