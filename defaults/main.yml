@@ -44,6 +44,9 @@ livekit_server_container_image_self_build_src_files_path: "{{ livekit_server_bas
 # The base container network. It will be auto-created by this role if it doesn't exist already.
 livekit_server_container_network: "{{ livekit_server_identifier }}"
 
+# Control if the container network is deleted on uninstalling.
+livekit_server_container_network_deletion_enabled: true
+
 # Specify how the container publishes its RTC port and which interface to do it on.
 #
 # Takes an interface "<ip address>" (e.g. "127.0.0.1"), or empty string to listen on all interfaces.
