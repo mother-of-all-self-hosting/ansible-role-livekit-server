@@ -38,7 +38,7 @@
     mode: "0640"
     owner: "{{ livekit_server_uid }}"
     group: "{{ livekit_server_gid }}"
-  register: livekit_server_config_result
+  register: livekit_server_config_file_result
 
 - name: Run if self-building of LiveKit Server container image is not enabled
   when: "not livekit_server_container_image_self_build | bool"
@@ -124,7 +124,7 @@
     livekit_server_restart_necessary: >-
       {{
         livekit_server_support_files_result.changed | default(false)
-        or livekit_server_config_result.changed | default(false)
+        or livekit_server_config_file_result.changed | default(false)
         or livekit_server_systemd_service_result.changed | default(false)
         or livekit_server_container_image_pull_result.changed | default(false)
         or livekit_server_container_image_build_result.changed | default(false)
