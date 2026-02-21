@@ -70,6 +70,17 @@ livekit_server_config_keys_custom:
 
 **Note**: on the MDAD playbook, the key value is specified with `livekit_server_config_keys_auto` by default, so you do not need to add them. See its [`matrix_servers`](https://github.com/spantaleev/matrix-docker-ansible-deploy/blob/master/group_vars/matrix_servers) for details.
 
+### TURN TLS modes
+
+`livekit_server_config_turn_external_tls` controls where TURN TLS is terminated.
+
+The default in this role is `false`.
+
+- Set it to `true` when a reverse proxy (such as Traefik) terminates TURN TLS and forwards plain TCP to LiveKit.
+- Set it to `false` when LiveKit should terminate TLS itself. In this mode, set `livekit_server_config_turn_cert_file` and `livekit_server_config_turn_key_file` to valid file paths (defaults are empty).
+
+When external TLS mode is enabled, the role expects Traefik TCP labels to be set (`livekit_server_container_labels_turn_traefik_enabled: true` and a non-empty `livekit_server_container_labels_turn_traefik_entrypoints`) and does not configure cert files for TURN.
+
 ## Installing
 
 After configuring the playbook, run the installation command of your playbook as below:
