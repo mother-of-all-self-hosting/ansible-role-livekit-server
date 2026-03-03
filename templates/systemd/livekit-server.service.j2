@@ -36,6 +36,7 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       --user={{ livekit_server_uid }}:{{ livekit_server_gid }} \
       --cap-drop=ALL \
       --network={{ livekit_server_container_network }} \
+      {% if livekit_server_container_network != 'host' %}
       {% if livekit_server_container_rtc_listen_interface is not in [none, 'none'] %}
       -p {{ livekit_server_container_rtc_listen_interface }}{{ ':' if livekit_server_container_rtc_listen_interface else '' }}{{ livekit_server_config_rtc_tcp_port }}:{{ livekit_server_config_rtc_tcp_port }} \
       {% endif %}
@@ -56,6 +57,7 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       {% endif %}
       {% if livekit_server_container_metrics_listen_interface is not in [none, 'none'] and livekit_server_config_prometheus_enabled %}
       -p {{ livekit_server_container_metrics_listen_interface }}{{ ':' if livekit_server_container_metrics_listen_interface else '' }}{{ livekit_server_config_prometheus_port }}:{{ livekit_server_config_prometheus_port }} \
+      {% endif %}
       {% endif %}
       --env-file={{ livekit_server_base_path }}/env \
       --label-file={{ livekit_server_base_path }}/labels \

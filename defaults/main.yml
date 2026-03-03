@@ -42,6 +42,10 @@ livekit_server_container_image_self_build_repo_version: "{{ livekit_server_versi
 livekit_server_container_image_self_build_src_files_path: "{{ livekit_server_base_path }}/docker-src"
 
 # The base container network. It will be auto-created by this role if it doesn't exist already.
+#
+# Setting this to `host` enables host networking and skips Docker port publishing.
+# This can improve startup and runtime performance when many UDP ports are needed,
+# but it also weakens isolation and requires handling firewall exposure at the host level.
 livekit_server_container_network: "{{ livekit_server_identifier }}"
 
 # Control if the container network is deleted on uninstalling.

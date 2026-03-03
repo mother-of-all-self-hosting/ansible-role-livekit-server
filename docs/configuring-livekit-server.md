@@ -32,6 +32,14 @@ When embedded TURN is enabled (`livekit_server_config_turn_enabled: true`), open
 
 💡 The suggestions above are inspired by the upstream [Ports and Firewall](https://docs.livekit.io/home/self-hosting/ports-firewall/) documentation based on how LiveKit is configured in the role. If you're using custom configuration, adjust the firewall rules and port forwarding accordingly.
 
+### Host networking mode
+
+Setting `livekit_server_container_network: host` runs LiveKit with host networking.
+
+- Docker port publishing (`-p`) is skipped in this mode.
+- You need to open firewall ports directly on the host.
+- This can improve performance and startup time when using larger UDP ranges, but reduces container-network isolation.
+
 ## Adjusting the playbook configuration
 
 To enable LiveKit Server with this role, add the following configuration to your `vars.yml` file.
