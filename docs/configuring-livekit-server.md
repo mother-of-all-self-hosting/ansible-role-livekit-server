@@ -24,7 +24,13 @@ To ensure LiveKit Server functions correctly, the following firewall rules and p
 - `7881/tcp`: ICE/TCP
 - `7882/udp`: ICE/UDP Mux
 
-💡 The suggestions above are inspired by the upstream [Ports and Firewall](https://docs.livekit.io/home/self-hosting/ports-firewall/) documentation based on how LiveKit is configured in the playbook. If you've using custom configuration for the LiveKit Server role, you may need to adjust the firewall rules accordingly.
+When embedded TURN is enabled (`livekit_server_config_turn_enabled: true`), open these as well:
+
+- `livekit_server_config_turn_udp_port/udp` (default: `3478/udp`): TURN/UDP
+- `livekit_server_config_turn_tls_port/tcp` (default: `5349/tcp`): TURN/TLS (direct mode)
+- `livekit_server_config_turn_relay_range_start-livekit_server_config_turn_relay_range_end/udp` (default: `30000-30020/udp`): TURN relay ports
+
+💡 The suggestions above are inspired by the upstream [Ports and Firewall](https://docs.livekit.io/home/self-hosting/ports-firewall/) documentation based on how LiveKit is configured in the role. If you're using custom configuration, adjust the firewall rules and port forwarding accordingly.
 
 ## Adjusting the playbook configuration
 

@@ -346,6 +346,15 @@ livekit_server_config_turn_tls_port: 5349
 # See: https://docs.livekit.io/home/self-hosting/ports-firewall/
 livekit_server_config_turn_udp_port: 3478
 
+# Controls the `turn.relay_range_start` configuration property.
+# LiveKit allocates TURN relay sockets from this UDP range.
+# Keep this range intentionally small to avoid very long Docker port-publishing startup times.
+livekit_server_config_turn_relay_range_start: 30000
+
+# Controls the `turn.relay_range_end` configuration property.
+# Keep this range intentionally small to avoid very long Docker port-publishing startup times.
+livekit_server_config_turn_relay_range_end: 30020
+
 ########################################################################################
 #                                                                                      #
 # /TURN                                                                                #
