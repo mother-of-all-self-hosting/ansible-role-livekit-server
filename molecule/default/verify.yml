@@ -1,0 +1,53 @@
+# SPDX-FileCopyrightText: 2026 Suguru Hirahara
+# SPDX-FileCopyrightText: 2026 spatterlight
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+- name: Verify LiveKit Server systemd service
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Wait for LiveKit Server service to become active (up to 180s)
+      ansible.builtin.systemd:
+        name: livekit-server.service
+      register: livekit_server_service
+      until: livekit_server_service.status.ActiveState == 'active'
+      retries: 36
+      delay: 5
+
+    - name: Assert LiveKit Server service is active
+      ansible.builtin.assert:
+        that: livekit_server_service.status.ActiveState == 'active'
+        fail_msg: "livekit-server.service not active ({{ livekit_server_service.status.ActiveState }})"
+        success_msg: "livekit-server.service is active"
+
+    - name: Retrieve LiveKit Server service log for debugging
+      when: livekit_server_debug_service_enabled | bool
+      ansible.builtin.command:
+        cmd: journalctl -xeu livekit-server.service
+      changed_when: false
+
+    - name: Wait for LiveKit Server HTTP endpoint to respond (up to 10m)
+      ansible.builtin.uri:
+        url: "http://localhost:8081/"
+        method: GET
+        status_code: [200, 302]
+        follow_redirects: none
+      register: livekit_server_endpoint
+      until: livekit_server_endpoint.status in [200, 302]
+      retries: 120
+      delay: 5
+
+    - name: Assert LiveKit Server HTTP endpoint responds
+      ansible.builtin.assert:
+        that: livekit_server_endpoint.status in [200, 302]
+        fail_msg: "LiveKit Server did not respond as expected ({{ livekit_server_endpoint.status | default('no response') }})"
+        success_msg: "LiveKit Server responded with {{ livekit_server_endpoint.status }}"
+
+    - name: Show LiveKit Server systemd service status summary
+      ansible.builtin.debug:
+        msg:
+          - "LiveKit Server systemd: {{ livekit_server_service.status.ActiveState }}"
+          - "LiveKit Server HTTP: {{ livekit_server_endpoint.status }}"
