@@ -47,7 +47,11 @@ Currently there is one testing scenario available.
 
 ### `default`
 
-Tests a standard LiveKit Server installation.
+Tests a standard LiveKit Server installation. Beyond checking that the systemd service comes up, it talks to the running server the way a client and an application server would.
+
+It first establishes that the same container image, started with no configuration at all, refuses to run (`one of key-file or keys must be provided`) — so nothing that follows can be credited to a stock image rather than to the role. It then mints a LiveKit access token in `python3` (an HS256 JWT, signed with the API key and secret the scenario configured) and uses it to create a room over the `RoomService` API and find that same room again via `ListRooms`. The same API is expected to refuse a request with no token, a token signed with the wrong secret, and a token issued by an API key that is not in `config.yaml`, each failing distinguishably. `/rtc/validate`, which a real client hits before opening the signaling WebSocket, is expected to accept a room-join token and reject a forged one.
+
+The signaling and metrics ports the scenario sets are deliberately not the role's defaults, so the probes can only pass if those values reached the process. Finally, the running binary is asserted to report the version that `defaults/main.yml` pins.
 
 ## Running
 
