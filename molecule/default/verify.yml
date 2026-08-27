@@ -354,9 +354,15 @@
       ansible.builtin.assert:
         that:
           - "'good_status=200' in livekit_server_validate.stdout"
+          # `good_body=success` is LiveKit Server's own word for a validated
+          # token rather than a description of the failure, so it is kept - it
+          # is what distinguishes a validated token from any other 200.
           - "'good_body=success' in livekit_server_validate.stdout"
+          # The rejection is asserted by status only. LiveKit Server rephrases
+          # its error messages between releases - v1.13.6 turned "invalid
+          # token: ..." into "invalid authorization token: ..." - and matching
+          # the prose turns a cosmetic upstream change into a failed bump.
           - "'bad_status=401' in livekit_server_validate.stdout"
-          - "'bad_body=invalid token:' in livekit_server_validate.stdout"
         fail_msg: >-
           LiveKit Server did not validate room-join tokens as expected
           ({{ livekit_server_validate.stdout | default('no output') }})
