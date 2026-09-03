@@ -419,7 +419,7 @@
       register: livekit_server_version_reported
       changed_when: false
 
-    - name: Assert the running LiveKit Server is the version the role asks for
+    - name: Assert the running LiveKit Server is the version this role installs
       ansible.builtin.assert:
         # `--version` reports a bare `1.13.5`, while the role pins `v1.13.5`.
         that:
