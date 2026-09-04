@@ -417,12 +417,8 @@
         # `--version` reports a bare `1.13.5`, while the role pins `v1.13.5`.
         that:
           - (livekit_server_version_reported.stdout | trim | split(' ') | last) == (livekit_server_defaults.livekit_server_version | regex_replace('^v', ''))
-        fail_msg: >-
-          LiveKit Server reports {{ livekit_server_version_reported.stdout | trim | default('nothing', true) }},
-          but the role asks for {{ livekit_server_defaults.livekit_server_version }}
-        success_msg: >-
-          LiveKit Server reports {{ livekit_server_version_reported.stdout | trim }},
-          matching the {{ livekit_server_defaults.livekit_server_version }} the role asks for
+        fail_msg: "LiveKit Server reports {{ livekit_server_version_reported.stdout | trim | default('none') }}, expected {{ livekit_server_defaults.livekit_server_version }}"
+        success_msg: "LiveKit Server reports {{ livekit_server_version_reported.stdout | trim }}"
 
     - name: Show the LiveKit Server verification summary
       ansible.builtin.debug:
