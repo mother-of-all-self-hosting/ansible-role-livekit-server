@@ -424,14 +424,14 @@
           LiveKit Server reports {{ livekit_server_version_reported.stdout | trim }},
           matching the {{ livekit_server_defaults.livekit_server_version }} the role asks for
 
-    - name: Show LiveKit Server verification summary
+    - name: Show the LiveKit Server verification summary
       ansible.builtin.debug:
         msg:
-          - "systemd: {{ livekit_server_service.status.ActiveState }}"
-          - "Unconfigured image: {{ (livekit_server_negative_control.stdout + livekit_server_negative_control.stderr) | trim }}"
-          - "Signaling port {{ livekit_server_config_port }}: {{ livekit_server_health.stdout }}"
-          - "RoomService round trip: {{ livekit_server_roomservice.stdout }}"
-          - "Refused tokens: {{ livekit_server_refusals.stdout | replace('\n', ' ') }}"
-          - "Token validation: {{ livekit_server_validate.stdout }}"
-          - "Metrics port {{ livekit_server_config_prometheus_port }}: {{ livekit_server_metrics.stdout }}"
-          - "Version: {{ livekit_server_version_reported.stdout | trim }}"
+          - "LiveKit Server systemd: {{ livekit_server_service.status.ActiveState }}"
+          - "LiveKit Server version: {{ livekit_server_version_reported.stdout | trim }}"
+          - "LiveKit Server unconfigured image: {{ (livekit_server_negative_control.stdout + livekit_server_negative_control.stderr) | trim }}"
+          - "LiveKit Server signaling port {{ livekit_server_config_port }}: {{ livekit_server_health.stdout }}"
+          - "LiveKit Server RoomService round trip: {{ livekit_server_roomservice.stdout }}"
+          - "LiveKit Server refused tokens: {{ livekit_server_refusals.stdout | replace('\n', ' ') }}"
+          - "LiveKit Server token validation: {{ livekit_server_validate.stdout }}"
+          - "LiveKit Server metrics port {{ livekit_server_config_prometheus_port }}: {{ livekit_server_metrics.stdout }}"
