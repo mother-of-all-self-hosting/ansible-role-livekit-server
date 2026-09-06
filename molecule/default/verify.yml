@@ -406,7 +406,7 @@
     # startup, but the role runs the container with `--log-driver=none`, and
     # it is not exposed over HTTP - neither `/` nor `/rtc/validate` carries it
     # in a body or a header.
-    - name: Query the version reported by the running LiveKit Server
+    - name: Query the version of the running LiveKit Server
       ansible.builtin.command:
         cmd: "docker exec {{ livekit_server_defaults.livekit_server_identifier }} /livekit-server --version"
       register: livekit_server_version_reported
