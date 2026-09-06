@@ -398,10 +398,6 @@
           LiveKit Server serves metrics on port {{ livekit_server_config_prometheus_port }}
           ({{ livekit_server_metrics.stdout }})
 
-    # Tying the running version to `livekit_server_version` is what makes this
-    # scenario a real test of the version that Renovate bumps: a bump that
-    # produces an unusable image cannot pass here.
-    #
     # The version has to be asked of the binary. LiveKit Server logs it at
     # startup, but the role runs the container with `--log-driver=none`, and
     # it is not exposed over HTTP - neither `/` nor `/rtc/validate` carries it
@@ -412,11 +408,13 @@
       register: livekit_server_version_reported
       changed_when: false
 
+    # `livekit_server_version` carries a leading `v` (`v3.14.0`) but the binary
+    # reports the bare version (`3.14.0`). Any leading `v` is normalized
+    # away on both sides, so that this keeps holding if either side ever stops
+    # carrying one.
     - name: Assert the running LiveKit Server is the version this role installs
       ansible.builtin.assert:
-        # `--version` reports a bare `1.13.5`, while the role pins `v1.13.5`.
-        that:
-          - (livekit_server_version_reported.stdout | trim | split(' ') | last) == (livekit_server_defaults.livekit_server_version | regex_replace('^v', ''))
+        that: "(livekit_server_version_reported.stdout | trim | split(' ') | last | regex_replace('^v', '')) == (livekit_server_defaults.livekit_server_version | regex_replace('^v', ''))"
         fail_msg: "LiveKit Server reports {{ livekit_server_version_reported.stdout | trim | default('none') }}, expected {{ livekit_server_defaults.livekit_server_version }}"
         success_msg: "LiveKit Server reports {{ livekit_server_version_reported.stdout | trim }}"
 
