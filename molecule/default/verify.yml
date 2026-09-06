@@ -189,6 +189,25 @@
           LiveKit Server answers on port {{ livekit_server_config_port }}
           ({{ livekit_server_health.stdout }})
 
+    # The version has to be asked of the binary. LiveKit Server logs it at
+    # startup, but the role runs the container with `--log-driver=none`, and
+    # it is not exposed over HTTP - neither `/` nor `/rtc/validate` carries it
+    # in a body or a header.
+    - name: Query the version of the running LiveKit Server
+      ansible.builtin.command:
+        cmd: "docker exec {{ livekit_server_defaults.livekit_server_identifier }} /livekit-server --version"
+      register: livekit_server_version_reported
+      changed_when: false
+
+    # `livekit_server_version` carries a leading `v` (`v3.14.0`) but the binary
+    # reports the bare version (`3.14.0`). Any leading `v` is normalized
+    # away on both sides, so that this keeps holding if either side ever changes.
+    - name: Assert the running LiveKit Server is the version this role installs
+      ansible.builtin.assert:
+        that: "(livekit_server_version_reported.stdout | trim | split(' ') | last | regex_replace('^v', '')) == (livekit_server_defaults.livekit_server_version | regex_replace('^v', ''))"
+        fail_msg: "LiveKit Server reports {{ livekit_server_version_reported.stdout | trim | default('none') }}, expected {{ livekit_server_defaults.livekit_server_version }}"
+        success_msg: "LiveKit Server reports {{ livekit_server_version_reported.stdout | trim }}"
+
     # The health endpoint answers anyone, and says nothing about the API keys
     # that config.yaml carries. Creating a room and then finding it listed is
     # the smallest complete exercise of the RoomService API: it is
@@ -397,25 +416,6 @@
         success_msg: >-
           LiveKit Server serves metrics on port {{ livekit_server_config_prometheus_port }}
           ({{ livekit_server_metrics.stdout }})
-
-    # The version has to be asked of the binary. LiveKit Server logs it at
-    # startup, but the role runs the container with `--log-driver=none`, and
-    # it is not exposed over HTTP - neither `/` nor `/rtc/validate` carries it
-    # in a body or a header.
-    - name: Query the version of the running LiveKit Server
-      ansible.builtin.command:
-        cmd: "docker exec {{ livekit_server_defaults.livekit_server_identifier }} /livekit-server --version"
-      register: livekit_server_version_reported
-      changed_when: false
-
-    # `livekit_server_version` carries a leading `v` (`v3.14.0`) but the binary
-    # reports the bare version (`3.14.0`). Any leading `v` is normalized
-    # away on both sides, so that this keeps holding if either side ever changes.
-    - name: Assert the running LiveKit Server is the version this role installs
-      ansible.builtin.assert:
-        that: "(livekit_server_version_reported.stdout | trim | split(' ') | last | regex_replace('^v', '')) == (livekit_server_defaults.livekit_server_version | regex_replace('^v', ''))"
-        fail_msg: "LiveKit Server reports {{ livekit_server_version_reported.stdout | trim | default('none') }}, expected {{ livekit_server_defaults.livekit_server_version }}"
-        success_msg: "LiveKit Server reports {{ livekit_server_version_reported.stdout | trim }}"
 
     - name: Show the LiveKit Server verification summary
       ansible.builtin.debug:
