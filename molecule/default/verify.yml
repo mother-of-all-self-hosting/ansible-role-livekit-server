@@ -108,12 +108,12 @@
     - name: Inspect the LiveKit Server container
       ansible.builtin.command:
         cmd: "docker inspect {{ livekit_server_defaults.livekit_server_identifier }}"
-      register: livekit_server_container_inspect
+      register: livekit_server_container_raw
       changed_when: false
 
     - name: Parse the LiveKit Server container definition
       ansible.builtin.set_fact:
-        livekit_server_container: "{{ (livekit_server_container_inspect.stdout | from_json) | first }}"
+        livekit_server_container: "{{ (livekit_server_container_raw.stdout | from_json) | first }}"
 
     # The negative control for everything that follows. The same image the
     # role runs, started with no configuration at all, refuses to serve: it
