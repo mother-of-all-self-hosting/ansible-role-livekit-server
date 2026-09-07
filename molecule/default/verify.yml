@@ -79,21 +79,27 @@
         file: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/defaults/main.yml"
         name: livekit_server_defaults
 
-    - name: Wait for LiveKit Server service to become active (up to 180s)
-      ansible.builtin.systemd:
+    - name: Wait for the LiveKit Server systemd service to become active (up to 180s)
+      ansible.builtin.systemd_service:
         name: livekit-server.service
       register: livekit_server_service
       until: livekit_server_service.status.ActiveState == 'active'
       retries: 36
       delay: 5
+      # So that giving up is reported by the assertion below rather than as a
+      # wall of systemd unit properties.
+      failed_when: false
 
-    - name: Assert LiveKit Server service is active
+    # `Restart=always` in the systemd unit means that even a container which crashes
+    # and gets restarted reads as active here, so this is a precondition rather than
+    # a result.
+    - name: Assert the LiveKit Server systemd service is active
       ansible.builtin.assert:
         that: livekit_server_service.status.ActiveState == 'active'
-        fail_msg: "livekit-server.service not active ({{ livekit_server_service.status.ActiveState }})"
+        fail_msg: "livekit-server.service is not active ({{ livekit_server_service.status.ActiveState }})"
         success_msg: "livekit-server.service is active"
 
-    - name: Retrieve LiveKit Server service log for debugging
+    - name: Retrieve the LiveKit Server systemd service log for debugging
       when: livekit_server_debug_service_enabled | bool
       ansible.builtin.command:
         cmd: journalctl -xeu livekit-server.service
