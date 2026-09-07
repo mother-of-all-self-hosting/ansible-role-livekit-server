@@ -111,7 +111,7 @@
       register: livekit_server_container_inspect
       changed_when: false
 
-    - name: Read the LiveKit Server container definition
+    - name: Parse the LiveKit Server container definition
       ansible.builtin.set_fact:
         livekit_server_container: "{{ (livekit_server_container_inspect.stdout | from_json) | first }}"
 
