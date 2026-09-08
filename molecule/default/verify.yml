@@ -136,13 +136,10 @@
     # than on the command failing.
     - name: Run the LiveKit Server image standalone, without any configuration
       ansible.builtin.command:
-        argv:
-          - docker
-          - run
-          - --rm
-          - --name
-          - livekit-server-molecule-default-negative-control
-          - "{{ livekit_server_container.Config.Image }}"
+        cmd: >-
+          docker run --rm
+          --name livekit-server-molecule-default-negative-control
+          {{ livekit_server_container.Config.Image }}
       register: livekit_server_negative_control
       changed_when: false
       failed_when: false
