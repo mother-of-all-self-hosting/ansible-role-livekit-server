@@ -102,7 +102,7 @@
     - name: Retrieve the LiveKit Server systemd service log for debugging
       when: livekit_server_debug_service_enabled | bool
       ansible.builtin.command:
-        cmd: journalctl -xeu livekit-server.service
+        cmd: journalctl --no-pager --output=cat --unit=livekit-server.service
       changed_when: false
 
     # community.docker is deliberately avoided throughout this playbook: the
