@@ -70,6 +70,9 @@
       # that must be refused.
       wrong_secret = secret[::-1] + "-wrong"
 
+    livekit_server_verify_units:
+      - livekit-server.service
+
   tasks:
     - name: Verify that LiveKit Server works
       block:
@@ -81,13 +84,14 @@
             file: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/defaults/main.yml"
             name: livekit_server_defaults
 
-        - name: Wait for the LiveKit Server systemd service to become active (up to 180s)
+        - name: Wait for the LiveKit Server systemd services to become active (up to 180s each)
           ansible.builtin.systemd_service:
-            name: livekit-server.service
-          register: livekit_server_service
-          until: livekit_server_service.status.ActiveState == 'active'
+            name: "{{ item }}"
+          register: livekit_server_services
+          until: livekit_server_services.status.ActiveState == 'active'
           retries: 36
           delay: 5
+          loop: "{{ livekit_server_verify_units }}"
           # So that giving up is reported by the assertion below rather than as a
           # wall of systemd unit properties.
           failed_when: false
@@ -95,17 +99,20 @@
         # `Restart=always` in the systemd unit means that even a container which crashes
         # and gets restarted reads as active here, so this is a precondition rather than
         # a result.
-        - name: Assert the LiveKit Server systemd service is active
+        - name: Assert the LiveKit Server systemd services are active
           ansible.builtin.assert:
-            that: livekit_server_service.status.ActiveState == 'active'
-            fail_msg: "livekit-server.service is not active ({{ livekit_server_service.status.ActiveState }})"
-            success_msg: "livekit-server.service is active"
+            that: livekit_server_services.results | map(attribute='status.ActiveState') | unique | list == ['active']
+            fail_msg: >-
+              Not every service is active:
+              {{ dict(livekit_server_verify_units | zip(livekit_server_services.results | map(attribute='status.ActiveState'))) }}
+            success_msg: "Every systemd service is active"
 
-        - name: Retrieve the LiveKit Server systemd service log for debugging
+        - name: Retrieve the LiveKit Server systemd services log for debugging
           when: livekit_server_debug_service_enabled | bool
           ansible.builtin.command:
-            cmd: journalctl --no-pager --output=cat --unit=livekit-server.service
+            cmd: "journalctl --no-pager --output=cat --unit={{ item }}"
           changed_when: false
+          loop: "{{ livekit_server_verify_units }}"
 
         # community.docker is deliberately avoided throughout this playbook: the
         # linting environment in CI has no collections installed.
@@ -425,7 +432,7 @@
         - name: Show the LiveKit Server verification summary
           ansible.builtin.debug:
             msg:
-              - "LiveKit Server systemd: {{ livekit_server_service.status.ActiveState }}"
+              - "LiveKit Server systemd: {% for unit, state in livekit_server_verify_units | zip(livekit_server_services.results | map(attribute='status.ActiveState')) %}{{ unit }} ({{ state }}){% if not loop.last %}, {% endif %}{% endfor %}"
               - "LiveKit Server version: {{ livekit_server_version_reported.stdout | trim }}"
               - "LiveKit Server unconfigured image: {{ (livekit_server_negative_control.stdout + livekit_server_negative_control.stderr) | trim }}"
               - "LiveKit Server signaling port {{ livekit_server_config_port }}: {{ livekit_server_health.stdout }}"
