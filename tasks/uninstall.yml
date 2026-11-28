@@ -44,6 +44,7 @@
               {{ livekit_server_container_network }}
           register: livekit_server_network_deletion_result
           changed_when: livekit_server_container_network in livekit_server_network_deletion_result.stdout
+          failed_when: livekit_server_network_deletion_result.rc != 0 and 'not found' not in livekit_server_network_deletion_result.stderr
 
     - name: Ensure LiveKit Server path does not exist
       ansible.builtin.file:
